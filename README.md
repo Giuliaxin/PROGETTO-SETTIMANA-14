@@ -92,3 +92,12 @@ Testa il vincolo di unicità: Tenta di inserire un secondo Like con gli stessi a
 ![tabelle.png](tabelle.png)
 
 ![dati.png](dati.png)
+
+
+## Test Extra: Eliminazione Utente con Relazioni
+
+Nel `SocialNetworkRunner` è stato implementato un test extra per verificare il comportamento del sistema quando si tenta di eliminare un utente che ha già post, commenti o like associati.
+
+* **Comportamento riscontrato:** L'operazione viene bloccata dal database.
+* **Eccezione sollevata:** Viene generata un'eccezione per violazione del vincolo di integrità referenziale (`DataIntegrityViolationException` / `ConstraintViolationException`).
+* **Motivazione tecnica:** Nelle tabelle collegate (`posts`, `comments`, `likes`) sono presenti chiavi esterne (Foreign Key) che fanno riferimento all'utente. In assenza di una cancellazione a cascata (`CascadeType.REMOVE`), il database impedisce l'eliminazione per evitare la presenza di record orfani e mantenere la coerenza dei dati relazionali.
