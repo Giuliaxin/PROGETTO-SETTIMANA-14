@@ -32,10 +32,12 @@ public class SocialNetworkRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("--- AVVIO TEST SOCIAL NETWORK ---");
 
+        User user2 = null;
+
         try {
             System.out.println(">>> FASE 1: CREAZIONE E SALVATAGGIO UTENTI <<<");
             User user1 = usersService.save("giuly_99", "Giuliana Petricore", "giuly@example.com");
-            User user2 = usersService.save("mario_rossi", "Mario Rossi", "mario@example.com");
+            user2 = usersService.save("mario_rossi", "Mario Rossi", "mario@example.com");
             System.out.println(">>> ESITO: Utenti salvati con successo. <<<");
 
             System.out.println(">>> FASE 2: CREAZIONE E SALVATAGGIO POST <<<");
@@ -59,6 +61,16 @@ public class SocialNetworkRunner implements CommandLineRunner {
             System.out.println(">>> TEST PASSATO: Il service ha bloccato il like duplicato dicendo: " + e.getMessage() + " <<<");
         } catch (Exception e) {
             System.out.println(">>> ERRORE GENERICO: " + e.getMessage() + " <<<");
+        }
+
+        if (user2 != null) {
+            System.out.println(">>> FASE 6: TEST EXTRA - ELIMINAZIONE UTENTE CON RELAZIONI <<<");
+            try {
+                usersService.delete(user2.getUserId().toString());
+                System.out.println(">>> ERRORE: L'utente e' stato eliminato (non doveva succedere senza Cascade.REMOVE). <<<");
+            } catch (Exception e) {
+                System.out.println(">>> TEST EXTRA PASSATO: L'eliminazione e' stata bloccata dal database per vincolo di integrita' referenziale. <<<");
+            }
         }
     }
 }
